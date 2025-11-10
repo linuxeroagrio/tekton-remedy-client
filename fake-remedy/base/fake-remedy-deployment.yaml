@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fake-remedy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fake-remedy
+  template:
+    metadata:
+      labels:
+        app: fake-remedy
+    spec:
+      containers:
+        - name: wiremock
+          image: docker.io/wiremock/wiremock:3.13.1-1
+          args:
+            - "--verbose"
+            - "--local-response-templating"
+          ports:
+            - containerPort: 8080
+              name: http
+          volumeMounts:
+            - name: mappings
+              mountPath: /home/wiremock/mappings
+      volumes:
+        - name: mappings
+          configMap:
+            name: fake-remedy-mappings

@@ -1,0 +1,13 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: fake-remedy
+spec:
+  subdomain: fake-remedy
+  to:
+    kind: Service
+    name: fake-remedy
+  port:
+    targetPort: http
+  tls:
+    termination: edge

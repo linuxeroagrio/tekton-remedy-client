@@ -1,0 +1,42 @@
+# Fake Remedy + Tekton CRQ Lifecycle
+
+Este repositorio contiene:
+
+- Servidor fake de Remedy basado en WireMock
+- Tasks Tekton
+- Pipeline completo para gestionar el ciclo CRQ
+- Simulación de workflow automático
+- Endpoints de error para pruebas de resiliencia
+
+## Deploy del Fake Remedy
+
+```
+oc kustomize -k fake-remedy/overlays/devel | oc apply -f -
+```
+
+## Obtener el hostname
+
+```
+oc get route fake-remedy -n fake-remedy
+```
+
+## Ejecutar el Pipeline
+
+```
+oc apply -f remedy-crq-lifecycle.yaml
+oc apply -f pipelinerun.yaml
+```
+
+## Qué prueba esto
+
+- Login
+- Creación de CRQ
+- Adjuntos
+- Aprobaciones
+- Tareas
+- Cierre del CRQ
+- Errores simulados
+- Delays simulados
+- Cambio automático de estado
+
+Ideal para validar Tekton, CI/CD o integraciones sin un Remedy real.

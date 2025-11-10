@@ -1,0 +1,159 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fake-remedy-mappings
+data:
+  login.json: |
+    {
+      "request": {
+        "method": "POST",
+        "url": "/api/jwt/login"
+      },
+      "response": {
+        "status": 200,
+        "jsonBody": {
+          "token": "FAKE-TOKEN-12345"
+        }
+      }
+    }
+
+  create-crq.json: |
+    {
+      "request": {
+        "method": "POST",
+        "url": "/api/arsys/v1/entry/CHG:ChangeInterface"
+      },
+      "response": {
+        "status": 201,
+        "jsonBody": {
+          "values": {
+            "request_id": "CHG00000001",
+            "Status": "Draft"
+          }
+        }
+      }
+    }
+
+  get-crq.json: |
+    {
+      "request": {
+        "method": "GET",
+        "urlPattern": "/api/arsys/v1/entry/CHG:ChangeInterface/CHG00000001"
+      },
+      "response": {
+        "status": 200,
+        "jsonBody": {
+          "values": {
+            "request_id": "CHG00000001",
+            "current_status": "{{ request.currentTimeMillis div 10000 mod 6 }}"
+          }
+        },
+        "transformers": ["response-template"]
+      }
+    }
+
+  add-approver.json: |
+    {
+      "request": {
+        "method": "POST",
+        "url": "/api/arsys/v1/entry/CHG:Approvals"
+      },
+      "response": {
+        "status": 201,
+        "jsonBody": { "status": "ok" }
+      }
+    }
+
+  upload-file.json: |
+    {
+      "request": {
+        "method": "POST",
+        "urlPattern": "/api/arsys/v1/entry/CHG:ChangeInterface/.*/file"
+      },
+      "response": {
+        "status": 200,
+        "jsonBody": { "uploaded": true }
+      }
+    }
+
+  create-task.json: |
+    {
+      "request": {
+        "method": "POST",
+        "url": "/api/arsys/v1/entry/TAS:Task"
+      },
+      "response": {
+        "status": 201,
+        "jsonBody": {
+          "task_id": "TAS00000001",
+          "Status": "Open"
+        }
+      }
+    }
+
+  close-crq.json: |
+    {
+      "request": {
+        "method": "PUT",
+        "urlPattern": "/api/arsys/v1/entry/CHG:ChangeInterface/.*"
+      },
+      "response": {
+        "status": 200,
+        "jsonBody": { "closed": true }
+      }
+    }
+
+  error-500.json: |
+    {
+      "request": {
+        "method": "GET",
+        "url": "/fake-error/500"
+      },
+      "response": {
+        "status": 500,
+        "jsonBody": { "error": "Internal fake error" }
+      }
+    }
+
+  slow-response.json: |
+    {
+      "request": {
+        "method": "GET",
+        "url": "/fake-delay/10s"
+      },
+      "response": {
+        "status": 200,
+        "fixedDelayMilliseconds": 10000,
+        "jsonBody": { "ok": true }
+      }
+    }
+  
+  get-pdf-attachment.json: |
+    {
+      "request": {
+        "method": "GET",
+        "urlPattern": "/api/arsys/v1/entry/CHG:ChangeInterface/.*/file/.*\\.pdf"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/pdf"
+        },
+        "base64Body": "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PAovVHlwZSAvQ2F0YWxvZwovUGFnZXMgMiAwIFIKPj4KZW5kb2JqCjIgMCBvYmoKPDwKL1R5cGUgL1BhZ2VzCi9LaWRzIFszIDAgUl0KL0NvdW50IDEKPj4KZW5kb2JqCjMgMCBvYmoKPDwKL1R5cGUgL1BhZ2UKL1BhcmVudCAyIDAgUgovTWVkaWFCb3hbMCAwIDU5NSA4NDJdCi9Db250ZW50cyA0IDAgUgo+PgplbmRvYmoKNCAwIG9iago8PAovTGVuZ3RoIDQyCj4+c3RyZWFtCkJUIAovRmFrZS1QREYtRE9DVU1FTlQKRVQgZW5kc3RyZWFtCmVuZG9iago1IDAgb2JqCjw8Ci9UeXBlIC9YUmVmCi9Sb290IDEgMCBSCj4+CmVuZG9iagp4cmVmCjAgNgowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAxMTkgMDAwMDAgbiAKMDAwMDAwMDA4MCAwMDAwMCBuIAowMDAwMDAwMTY1IDAwMDAwIG4gCjAwMDAwMDAzMzkgMDAwMDAgbiAKMDAwMDAwMDQ5NCAwMDAwMCBuIAp0cmFpbGVyCjw8Ci9TaXplIDYKL1Jvb3QgNSAwIFIKPj4Kc3RhcnR4cmVmCjY2NQolJUVPRgo="
+      }
+    }
+  
+  crq-html-viewer.json: |
+    {
+      "request": {
+        "method": "GET",
+        "urlPattern": "/changes/CHG00000001/view"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "text/html"
+        },
+        "body": "<html><body><h1>CRQ Viewer</h1><p>ID: CHG00000001</p><p>Status changes every 10 seconds.</p></body></html>"
+      }
+    }
