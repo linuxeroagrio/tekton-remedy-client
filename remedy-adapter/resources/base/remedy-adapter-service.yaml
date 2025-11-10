@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: remedy-adapter
+spec:
+  selector:
+    app: remedy-adapter
+  ports:
+  - port: 80
+    targetPort: 8080

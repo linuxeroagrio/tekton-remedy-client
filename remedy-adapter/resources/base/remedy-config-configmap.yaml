@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: remedy-config
+data:
+  REMEDY_HOST: PATCH_ME_SEE_OVERLAYS
+  REMEDY_BASEPATH: ""

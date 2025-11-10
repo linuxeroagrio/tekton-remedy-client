@@ -11,20 +11,13 @@ Este repositorio contiene:
 ## Deploy del Fake Remedy
 
 ```
-oc kustomize -k fake-remedy/overlays/devel | oc apply -f -
+oc kustomize -k fake-remedy/resources/overlays/devel | oc apply -f -
 ```
 
-## Obtener el hostname
+## Deploy del Adapter de Remedy
 
 ```
-oc get route fake-remedy -n fake-remedy
-```
-
-## Ejecutar el Pipeline
-
-```
-oc apply -f remedy-crq-lifecycle.yaml
-oc apply -f pipelinerun.yaml
+oc kustomize -k remedy-adapter/resources/overlays/devel | oc apply -f -
 ```
 
 ## Qué prueba esto

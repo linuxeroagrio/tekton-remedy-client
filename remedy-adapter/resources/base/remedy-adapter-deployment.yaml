@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: remedy-adapter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: remedy-adapter
+  template:
+    metadata:
+      labels:
+        app: remedy-adapter
+    spec:
+      containers:
+      - name: adapter
+        imagePullPolicy: Always
+        image: PATCH_ME_SEE_OVERLAYS
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - secretRef:
+            name: remedy-credentials
+        - configMapRef:
+            name: remedy-config
