@@ -6,7 +6,14 @@ Este repositorio contiene:
 - Tasks Tekton
 - Pipeline completo para gestionar el ciclo CRQ
 - Simulación de workflow automático
-- Endpoints de error para pruebas de resiliencia
+
+## Dependencias
+
+- OpenShift Cluster 4x
+- OpenShift Pipelines Operator
+- oc CLI
+- tkn CLI
+- Usuario con rol `cluster-admin`
 
 ## Deploy del Fake Remedy
 
