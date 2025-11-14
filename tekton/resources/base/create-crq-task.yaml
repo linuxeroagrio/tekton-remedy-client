@@ -1,0 +1,99 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: create-crq
+spec:
+  params:
+  - name: ADAPTER_URL
+    type: string
+  - name: DESCRIPTION
+    type: string
+    default: ""
+  - name: DETAILED_DESCRIPTION
+    type: string
+    default: ""
+  - name: IMPACT
+    type: string
+    default: "4-Minor/Localized"
+  - name: URGENCY
+    type: string
+    default: "3-Medium"
+  - name: RISK_LEVEL
+    type: string
+    default: "Moderate"
+  - name: SUMMARY
+    type: string
+    default: ""
+  - name: CATEGORIZATION_TIER_1
+    type: string
+    default: ""
+  - name: CATEGORIZATION_TIER_2
+    type: string
+    default: ""
+  - name: CATEGORIZATION_TIER_3
+    type: string
+    default: ""
+  - name: PRODUCT_CATEGORIZATION_TIER_1
+    type: string
+    default: ""
+  - name: PRODUCT_CATEGORIZATION_TIER_2
+    type: string
+    default: ""
+  - name: PRODUCT_CATEGORIZATION_TIER_3
+    type: string
+    default: ""
+  - name: OPERATIONAL_CATEGORIZATION_TIER_1
+    type: string
+    default: ""
+  - name: OPERATIONAL_CATEGORIZATION_TIER_2
+    type: string
+    default: ""
+  - name: REPORTED_SOURCE
+    type: string
+    default: "Automated System"
+  - name: REQUESTER_ID
+    type: string
+    default: "svc-tekton"
+  - name: ASSIGNED_GROUP
+    type: string
+    default: ""
+  - name: ASSIGNEE
+    type: string
+    default: ""
+  - name: STATUS
+    type: string
+    default: "Draft"
+  results:
+  - name: CRQ_ID
+  steps:
+  - name: do-create
+    image: image-registry.openshift-image-registry.svc:5000/openshift/tools:latest
+    script: |
+      #!/bin/bash
+      R=$(curl -s -k -X POST "$(params.ADAPTER_URL)/api/v1/crq" -H "Content-Type: application/json" -d \
+      '{"values": {"Description": "$(params.DESCRIPTION)",
+      "Detailed Description": "$(params.DETAILED_DESCRIPTION)",
+      "Impact": "$(params.IMPACT)",
+      "Urgency": "$(params.URGENCY)",
+      "Risk Level": "$(params.RISK_LEVEL)",
+      "Summary": "$(params.SUMMARY)",
+      "Categorization Tier 1": "$(params.CATEGORIZATION_TIER_1)",
+      "Categorization Tier 2": "$(params.CATEGORIZATION_TIER_2)",
+      "Categorization Tier 3": "$(params.CATEGORIZATION_TIER_3)",
+      "Product Categorization Tier 1": "$(params.PRODUCT_CATEGORIZATION_TIER_1)",
+      "Product Categorization Tier 2": "$(params.PRODUCT_CATEGORIZATION_TIER_2)",
+      "Product Categorization Tier 3": "$(params.PRODUCT_CATEGORIZATION_TIER_3)",
+      "Operational Categorization Tier 1": "$(params.OPERATIONAL_CATEGORIZATION_TIER_1)",
+      "Operational Categorization Tier 2": "$(params.OPERATIONAL_CATEGORIZATION_TIER_2)",
+      "Reported Source": "$(params.REPORTED_SOURCE)",
+      "Requester ID": "$(params.REQUESTER_ID)",
+      "Assigned Group": "$(params.ASSIGNED_GROUP)",
+      "Assignee": "$(params.ASSIGNEE)",
+      "Status": "$(params.STATUS)"}}')
+      
+      echo ${R}
+
+      CRQ_ID=$(echo ${R} | jq -r '.crq_id')
+      echo "CRQ generado: $CRQ_ID"
+      
+      echo -n "${CRQ_ID}" > /tekton/results/CRQ_ID

@@ -36,7 +36,7 @@ def create_crq():
     resp = requests.post(remedy_url, json={"values": payload}, headers=headers, verify=False)
     data = resp.json()
     
-    crq_id = data.get("values", {}).get("Change ID", "UNKNOWN")
+    crq_id = data.get("values", {}).get("request_id", "UNKNOWN")
     return jsonify({"crq_id": crq_id, "raw": data}), resp.status_code
 
 # Aprobar CRQ
